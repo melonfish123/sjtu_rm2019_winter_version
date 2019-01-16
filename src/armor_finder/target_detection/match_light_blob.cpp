@@ -1,11 +1,13 @@
 
 #include "armor_finder/armor_finder.h"
 
+using std::cout;
+using std::endl;
 using namespace cv;
 
 
 void ArmorFinder::initLightCoupleParam() {
-    light_couple_param_.TWIN_ANGEL_MAX = 5.001;
+    light_couple_param_.TWIN_ANGEL_MAX = 3.001;
     light_couple_param_.TWIN_LENGTH_RATIO_MAX = 2.0;
     light_couple_param_.TWIN_DISTANCE_N_MIN = 1.3;       // 1.7
     light_couple_param_.TWIN_DISTANCE_N_MAX = 3.8;       // 3.8
@@ -26,7 +28,7 @@ bool ArmorFinder::matchLightBlob(vector<LightBlob> &light_blobs, cv::Rect2d &arm
     long light_index_left = -1;
     long light_index_right = -1;
     sort(light_blobs.begin(), light_blobs.end());
-    //cout<<"light blobs vector size: "<<light_blobs.size()<<endl;
+    cout<<"light blobs vector size: "<<light_blobs.size()<<endl;
 
     for(long i = 0; i < light_blobs.size()-1; ++i)
     {
@@ -40,6 +42,7 @@ bool ArmorFinder::matchLightBlob(vector<LightBlob> &light_blobs, cv::Rect2d &arm
     }
     if(light_index_left + light_index_right == -2)
     {
+        cout << "error1!" << '\n';
         return false;
     }
 
@@ -50,10 +53,12 @@ bool ArmorFinder::matchLightBlob(vector<LightBlob> &light_blobs, cv::Rect2d &arm
     max_x = max(rect_left.x+rect_left.width, rect_right.x + rect_right.width) + armor_seeking_param_.BOX_EXTRA;
     min_y = min(rect_left.y, rect_right.y) - armor_seeking_param_.BOX_EXTRA;
     max_y = max(rect_left.y+rect_left.height, rect_right.y+rect_right.height) + armor_seeking_param_.BOX_EXTRA;
-    if (min_x < 0 || max_x > stereo_camera_param_.WIDTH || min_y < 0 || max_y > stereo_camera_param_.HEIGHT) {
+    if (min_x < 0 || max_x > 640 || min_y < 0 || max_y > 480) {
+        cout << "error2!" << '\n';
         return false;
     }
     armor_box = Rect2d(min_x, min_y, max_x - min_x, max_y - min_y);
+    cout << "match success!" << '\n';
     return true;
 }
 
@@ -67,24 +72,23 @@ bool ArmorFinder::isCoupleLight(const LightBlob &light_blob_i, const LightBlob &
     if(length_i / length_j > light_couple_param_.TWIN_LENGTH_RATIO_MAX ||
        length_j/ length_i > light_couple_param_.TWIN_LENGTH_RATIO_MAX)
     {
-        //cout<<"length similar fail."<<endl;
+        cout<<"length similar fail."<<endl;
         return false;
     }
-
     Point2f center_i = light_blob_i.rect.center;
     Point2f center_j = light_blob_j.rect.center;
     if(abs(center_i.y - center_j.y) / max(length_i, length_j) > light_couple_param_.TWIN_CENTER_POSITION_DIFF_RATIO)
     {
-        //cout<<"position y diff too much"<<endl;
+        cout<<"position y diff too much"<<endl;
         return false;
     }
 
     float angle_i = light_blob_i.rect.angle;
     float angle_j = light_blob_j.rect.angle;
-    //cout<<"angles: "<<angle_i<<" "<<angle_j<<endl;
+    cout<<"angles: "<<angle_i<<" "<<angle_j<<endl;
     if(abs(angle_i - angle_j) > light_couple_param_.TWIN_ANGEL_MAX)
     {
-        //cout<<"angle similar fail"<<endl;
+        cout<<"angle similar fail"<<endl;
         return false;
     }
     ;

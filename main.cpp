@@ -8,9 +8,11 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "armor_finder/armor_finder.h"
+#include "armor_finder/constant.h"
 #include "camera/camera_wrapper.h"
 #include "camera/video_wrapper.h"
 #include "camera/wrapper_head.h"
+
 
 #include <time.h>
 
@@ -25,7 +27,8 @@ using std::string;
 
 int main()
 {
-    int key;
+    int enemy_color = ENEMY_RED;
+
     while(true)
     {
         int from_camera = 1;
@@ -39,10 +42,9 @@ int main()
             video = new CameraWrapper;
         else
             video = new VideoWrapper(
-                    "/home/zhikun/Videos/video_horizontal_move_0.avi",
-                    "/home/zhikun/Videos/video_horizontal_move_1.avi"
+                    "/home/melonfish/Downloads/color_videos/video_color_0.avi",
+                    "/home/melonfish/Downloads/color_videos/video_color_0.avi"
                     );
-
 
         if(video->init())
         {
@@ -50,29 +52,32 @@ int main()
         } else{
             continue;
         }
-
       
         Mat src_left, src_right;
 
         ArmorFinder armor_finder;
-
+        armor_finder.setEnemyColor(enemy_color);
         cout<<"start working"<<endl;
 
         //for(int i = 0; i < 10; i++) video->read(src_left, src_right);
 
+//        bool timecheck=false;
+//        clock_t start,end;
+
         while (video->read(src_left, src_right))
         {
-            imshow("left", src_left);
-            imshow("right", src_right);
 
-//            if(!from_camera)
-//            {
-//                cvtColor(src_left, src_left, COLOR_BGR2GRAY);
-//                cvtColor(src_right, src_right, COLOR_BGR2GRAY);
+//            end = clock();
+//            if(timecheck){
+//                cout << "read time:" << end-start << endl;
 //            }
             armor_finder.run(src_left, src_right);
-            waitKey(1);
-            cout<<"running"<<endl;
+
+//            start = clock();
+//            timecheck=true;
+
+            waitKey(0);
+
         }
         delete video;
         cout<<"Program fails. Restarting"<<endl;

@@ -15,6 +15,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <armor_finder/param_struct_define.h>
+#include "armor_finder/constant.h"
 #include <uart/uart.h>
 #include <tracker/kcftracker.hpp>
 #include "tracker/tracker.h"
@@ -60,9 +61,16 @@ private:
 
     Uart uart_;
 
-    KCFTracker kcf_tracker_;
+    KCFTracker kcf_tracker_left_, kcf_tracker_right_;
 
+    cv::Mat src_blue0, src_red0, src_blue1, src_red1;
+    cv::Mat src_left_, src_right_;
 
+    int enemy_color_;
+public:
+    void setEnemyColor(int color);
+
+private:
     void initLightParam();
 
     void initLightCoupleParam();
@@ -84,6 +92,8 @@ private:
     bool stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right);
 
     bool stateTrackingTarget(cv::Mat &src_left, cv::Mat &src_right);
+
+    void splitBayerBG(cv::Mat &src, cv::Mat &blue, cv::Mat &red);
 
 public:
 
@@ -156,6 +166,8 @@ private:
 
     void manageHistorySpacePosition(const cv::Point3d &space_position);
 
+public:
+    void showTwoImages(std::string windows_name, const cv::Mat &src0, const cv::Mat &src1);
 
     void showContours(std::string windows_name, const cv::Mat &src_left, const std::vector<LightBlob> &light_blobs_left,
             const cv::Mat &src_right, const std::vector<LightBlob> &light_blobs_right);
@@ -167,6 +179,10 @@ private:
 
     void showSpacePositionBackToStereoVision(
             const cv::Mat &src_left, const cv::Mat &src_right, const cv::Point3d &space_position);
+
+    void trackInit(KCFTracker &kcf_tracker, cv::Mat &src, cv::Rect2d &armor_box);
+
+    bool track(KCFTracker &kcf_tracker, cv::Mat &src, cv::Rect2d &armor_box);
 
 };
 
