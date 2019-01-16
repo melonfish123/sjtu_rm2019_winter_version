@@ -1,0 +1,3 @@
+/home/melonfish/Downloads/sjtu_rm2019_winter_version-master2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/melonfish/Downloads/sjtu_rm2019_winter_version-master2/cmake-build-debug/CMakeFiles/run.dir
+/home/melonfish/Downloads/sjtu_rm2019_winter_version-master2/cmake-build-debug/CMakeFiles/edit_cache.dir
