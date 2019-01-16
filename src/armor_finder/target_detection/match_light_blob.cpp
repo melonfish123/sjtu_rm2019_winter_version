@@ -53,8 +53,10 @@ bool ArmorFinder::matchLightBlob(vector<LightBlob> &light_blobs, cv::Rect2d &arm
     max_x = max(rect_left.x+rect_left.width, rect_right.x + rect_right.width) + armor_seeking_param_.BOX_EXTRA;
     min_y = min(rect_left.y, rect_right.y) - armor_seeking_param_.BOX_EXTRA;
     max_y = max(rect_left.y+rect_left.height, rect_right.y+rect_right.height) + armor_seeking_param_.BOX_EXTRA;
+
     if (min_x < 0 || max_x > 640 || min_y < 0 || max_y > 480) {
         cout << "error2!" << '\n';
+
         return false;
     }
     armor_box = Rect2d(min_x, min_y, max_x - min_x, max_y - min_y);

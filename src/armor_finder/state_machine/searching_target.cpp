@@ -8,19 +8,6 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
     sendTargetByUart(0, 0, 0);
 
-    /*********************** send position by uart **************************************/
-    //cout<<armor_space_position_<<endl;
-    armor_space_position_.x += 5;
-    armor_space_position_.y = armor_space_position_.y * 1.63 + 7.7;
-    armor_space_position_.z = armor_space_position_.z * 1.24 - 42.4;
-
-    sendTargetByUart(
-            static_cast<float>(armor_space_position_.x),
-            static_cast<float>(armor_space_position_.y),
-            static_cast<float>(armor_space_position_.z));
-
-//    clock_t start = clock();
-
     /************************** find light blobs **********************************************/
     light_blobs_left_.clear(); light_blobs_right_.clear();
     bool state_left, state_right;
@@ -34,6 +21,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
     showContours("light contours", src_left, light_blobs_left_, src_right, light_blobs_right_);
 
 //    start = clock();
+
 
     /*************************** match light blobs***********************************/
     state_left = matchLightBlob(light_blobs_left_, armor_box_left_);
@@ -50,7 +38,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 //    std::cout<<"running till here"<<std::endl;
 
     /********************** convert to 3d coordinate *********************************/
-    convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
+    //convertToStereoscopicCoordinate(armor_box_left_, armor_box_right_, armor_space_position_);
 
 
     /********************** convert 3d coordinate back to two camera vision ***************/
@@ -58,7 +46,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 
 
     /******************** predict the armor moving path *******************************/
-    predictArmorPosition(armor_space_position_, armor_predicted_position_);
+    //predictArmorPosition(armor_space_position_, armor_predicted_position_);
 
 
 
@@ -67,6 +55,7 @@ bool ArmorFinder::stateSearchingTarget(cv::Mat &src_left, cv::Mat &src_right) {
 //    armor_space_position_.x += 5;
 //    armor_space_position_.y = armor_space_position_.y * 1.63 + 7.7;
 //    armor_space_position_.z = armor_space_position_.z * 1.24 - 42.4;
+
 
 //    sendTargetByUart(
 //            static_cast<float>(armor_space_position_.x),

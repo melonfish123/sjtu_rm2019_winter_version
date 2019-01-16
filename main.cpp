@@ -42,8 +42,10 @@ int main()
             video = new CameraWrapper;
         else
             video = new VideoWrapper(
+
                     "/home/melonfish/Downloads/color_videos/video_color_0.avi",
                     "/home/melonfish/Downloads/color_videos/video_color_0.avi"
+
                     );
 
         if(video->init())
@@ -59,7 +61,7 @@ int main()
         armor_finder.setEnemyColor(enemy_color);
         cout<<"start working"<<endl;
 
-        //for(int i = 0; i < 10; i++) video->read(src_left, src_right);
+        for(int i = 0; i < 10; i++) video->read(src_left, src_right);
 
 //        bool timecheck=false;
 //        clock_t start,end;
@@ -67,16 +69,10 @@ int main()
         while (video->read(src_left, src_right))
         {
 
-//            end = clock();
-//            if(timecheck){
-//                cout << "read time:" << end-start << endl;
-//            }
+         
             armor_finder.run(src_left, src_right);
+            waitKey(1);
 
-//            start = clock();
-//            timecheck=true;
-
-            waitKey(0);
 
         }
         delete video;

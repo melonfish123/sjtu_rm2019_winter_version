@@ -7,8 +7,10 @@ using std::cout;
 using std::endl;
 
 void ArmorFinder::initLightParam() {
+
     light_blob_param_.GRAY_THRESH = 200;
     light_blob_param_.CONTOUR_AREA_MIN = 1;
+
     light_blob_param_.CONTOUR_AREA_MAX = 3000;
     light_blob_param_.CONTOUR_LENGTH_MIN = 3;
     light_blob_param_.CONTOUR_HW_RATIO_MIN = 2.5;       // 2.5
@@ -33,7 +35,9 @@ bool ArmorFinder::findLightBlob(const cv::Mat &src, vector<LightBlob> &light_blo
 //    dilate(src_bin,src_bin_out,element);
 //    imshow("out binary image", src_bin_out);
     std::vector<vector<Point> > light_contours;
-    findContours(src_bin, light_contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+
+    findContours(src_bin, light_contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+
     //cout<<"number of contours:"<<light_contours.size()<<endl;
     for (auto &light_contour : light_contours) {
         if(!isValidLightContour(light_contour))
@@ -54,6 +58,7 @@ bool ArmorFinder::isValidLightContour(const vector<Point> &light_contour) {
         //cout<<"area fail."<<endl;
         return false;
     }
+
     RotatedRect cur_rect = minAreaRect(light_contour);
     Size2f cur_size = cur_rect.size;
     float length = cur_size.height > cur_size.width ? cur_size.height : cur_size.width;
@@ -70,6 +75,7 @@ bool ArmorFinder::isValidLightContour(const vector<Point> &light_contour) {
         //cout<<"length width ratio fail."<<endl;
         return false;
     }
+
 //    if(cur_contour_area / cur_size.area() < 0.7) return false;
     return true;
 }
